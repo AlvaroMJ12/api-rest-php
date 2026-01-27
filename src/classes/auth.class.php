@@ -68,39 +68,55 @@ class Authentication extends AuthModel
 	 * El token se manda como header poniendo en name "api-key" y como value el valor del token
 	 */
 	public function verify()
-    {
-        if(!isset($_SERVER['HTTP_API_KEY'])){
-    
-            $response = array(
-                'result' => 'error',
-                'details' => 'Usted no tiene los permisos para esta solicitud'
-            );
-        
-            Response::result(403, $response);
-            exit;
-        }
+	{
+		// 1. Obtenemos todas las cabeceras directamente del servidor 📡
+		$allHeaders = apache_request_headers();
+		
+		// 2. Buscamos el token en 'Authorization' (estándar de Postman) o 'api-key' (tu versión anterior)
+		$header = $allHeaders['Authorization'] ?? 
+				$allHeaders['authorization'] ?? 
+				$_SERVER['HTTP_AUTHORIZATION'] ?? 
+				$_SERVER['REDIRECT_HTTP_AUTHORIZATION'] ?? 
+				$_SERVER['HTTP_API_KEY'] ?? // Mantenemos compatibilidad con tu versión previa
+				null;
 
-        $jwt = $_SERVER['HTTP_API_KEY'];
+		if (!$header) {
+			$response = array(
+				'result' => 'error',
+				'details' => 'No se detecta la cabecera de autorización. Verifique el envío del token.'
+			);
+			Response::result(403, $response);
+			exit;
+		}
 
-        try {
-            $data = JWT::decode($jwt, $this->key, array('HS256'));
+		// 3. Postman envía "Bearer <token>". Separamos la palabra 'Bearer' del código real ✂️
+		$partes = explode(" ", $header);
+		
+		// Si hay dos partes, el token es la segunda; si no, es la primera.
+		$jwt = (count($partes) === 2) ? $partes[1] : $partes[0];
 
+		try {
+			// 4. Intentamos decodificar el token con la librería JWT
+			$data = JWT::decode($jwt, $this->key, array('HS256'));
+
+			// 5. Consultamos al modelo para ver si el usuario existe
 			$user = parent::getById($data->data->id);
 
-			if($user[0]['token'] != $jwt){
-				throw new Exception();
+			// 6. Comprobamos que el token de la BD coincida con el recibido
+			if (empty($user) || $user[0]['token'] != $jwt) {
+				throw new Exception("Token no coincide en la base de datos");
 			}
 			
-            return $data;
-        } catch (\Throwable $th) {
-            
-            $response = array(
-                'result' => 'error',
-                'details' => 'No tiene los permisos para esta solicitud'
-            );
-        
-            Response::result(403, $response);
-            exit;
-        }
-    }
+			return $data; // Todo ok, devolvemos los datos del usuario
+
+		} catch (\Throwable $th) {
+			// Si el token ha expirado, está mal firmado o no coincide 🚫
+			$response = array(
+				'result' => 'error',
+				'details' => 'Token inválido, expirado o sin permisos'
+			);
+			Response::result(403, $response);
+			exit;
+		}
+	}
 }

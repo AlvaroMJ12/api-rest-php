@@ -1,5 +1,6 @@
 <?php
 /**
+ * authModel.php
  * Clase del modelo para la tabla de usuarios
  * Representa un registro de la tabla de usuarios y permite hacer el login, obtener un token de un usuario y actualizar el token de un usuario
  */
@@ -8,13 +9,13 @@ class AuthModel
 	private $connection;
 	
 	public function __construct(){
-		$this->connection = new mysqli('127.0.0.1', 'root', '', 'apirestdwes', '3306');
+		$this->connection = new mysqli('db', 'root', 'root', 'almacen', '3306');
 
 		if($this->connection->connect_errno){
 			echo 'Error de conexión a la base de datos';
 			exit;
 		}
-	}
+	} 
 
 	/**
 	 * Método para autentificarse en la API

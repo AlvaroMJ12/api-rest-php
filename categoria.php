@@ -1,16 +1,16 @@
 <?php
 /**
- *	Script que se usa en los endpoints para trabajar con registros de la tabla PLAYER
- *	La clase "player.class.php" es la clase del modelo, que representa a un jugador de la tabla
+ *	Script que se usa en los endpoints para trabajar con registros de la tabla categoria
+ *	La clase "categoria.class.php" es la clase del modelo, que representa a un jugador de la tabla
 */
 require_once 'src/response.php';
-require_once 'src/classes/player.class.php';
 require_once 'src/classes/auth.class.php';
+require_once 'src/classes/categoria.class.php';
 
 $auth = new Authentication();
 $auth->verify();
 
-$user = new User();
+$categoria = new Categoria();
 
 /**
  * Se mira el tipo de petición que ha llegado a la API y dependiendo de ello se realiza una u otra accción
@@ -22,15 +22,14 @@ switch ($_SERVER['REQUEST_METHOD']) {
 	case 'GET':
 		$params = $_GET;
 
-		$usuarios = $user->get($params);
+		$categorias = $categoria->get($params);
 
 		$response = array(
 			'result' => 'ok',
-			'usuarios' => $usuarios
+			'categorias' => $categorias
 		);
 
 		Response::result(200, $response);
-
 		break;
 		
 	/**
@@ -49,8 +48,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
 			exit;
 		}
 
-
-		$insert_id = $user->insert($params);
+		$insert_id = $categoria->insert($params);
 
 		$response = array(
 			'result' => 'ok',
@@ -62,6 +60,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
 
 	/**
 	 * Cuando es PUT, comprobamos si la petición lleva el id del jugador que hay que actualizar. En caso afirmativo se usa el método update() del modelo.
+	 * En PUT hay que enviar todos los datos del registro, aunque no se cambien
 	 */
 	case 'PUT':
 		$params = json_decode(file_get_contents('php://input'), true);
@@ -76,14 +75,43 @@ switch ($_SERVER['REQUEST_METHOD']) {
 			exit;
 		}
 
-		$user->update($_GET['id'], $params);
+		$categoria->updatePut($_GET['id'], $params);
 
 		$response = array(
 			'result' => 'ok'
 		);
 
-		Response::result(200, $response);	
+		Response::result(200, $response);
 		break;
+
+/**
+	 * Cuando es PATCH, comprobamos si la petición lleva el id del jugador que hay que actualizar. En caso afirmativo se usa el método updatePatch() del modelo.
+	 * En PATCH no es necesario enviar todos los datos del registro, unicamente los que cambian
+	 */
+	case 'PATCH':
+		$params = json_decode(file_get_contents('php://input'), true);
+
+		if(!isset($params) || !isset($_GET['id']) || empty($_GET['id'])){
+			$response = array(
+				'result' => 'error',
+				'details' => 'Error en la solicitud'
+			);
+
+			Response::result(400, $response);
+			exit;
+		}
+
+		$categoria->updatePatch($_GET['id'], $params);
+
+		$response = array(
+			'result' => 'ok'
+		);
+
+		Response::result(200, $response);
+		break;
+
+
+
 
 	/**
 	 * Cuando se solicita un DELETE se comprueba que se envíe un id de jugador. En caso afirmativo se utiliza el método delete() del modelo.
@@ -99,7 +127,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
 			exit;
 		}
 
-		$user->delete($_GET['id']);
+		$categoria->delete($_GET['id']);
 
 		$response = array(
 			'result' => 'ok'
