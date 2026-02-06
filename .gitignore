@@ -1,0 +1,12 @@
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+__MACOSX/
+
+# Archivos de configuración y logs
+*.log
+.env
+
+# Dependencias (si usas Composer en el futuro)
+vendor/
