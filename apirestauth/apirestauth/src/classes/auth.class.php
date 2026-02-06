@@ -35,7 +35,7 @@ class Authentication extends AuthModel
 			Response::result(400, $response);
 			exit;
 		}
-
+		
 		$result = parent::login($user['username'], hash('sha256' , $user['password']));
 
 		if(sizeof($result) == 0){
@@ -119,4 +119,5 @@ class Authentication extends AuthModel
 			exit;
 		}
 	}
+	
 }

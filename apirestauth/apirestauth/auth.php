@@ -1,5 +1,7 @@
 <?php
 /**
+ * 
+	auth.php
  * Clase que hace de endpoint para la autentificación
  * Se debe mandar por POST un json con el usuario y la contraseña
  */
