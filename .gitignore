@@ -10,3 +10,15 @@ __MACOSX/
 
 # Dependencias (si usas Composer en el futuro)
 vendor/
+
+# Metadatos del sistema operativo
+.DS_Store
+Thumbs.db
+*.Zone.Identifier
+
+# Archivos de configuración de editores
+.vscode/
+.idea/
+
+# Archivos temporales o de logs
+*.log

@@ -1,38 +1,38 @@
 <?php
 // post_articulo.php
 
-// Datos del nuevo artículo (Lo que vas a insertar)
-$nuevoArticulo = [
-    "art_nombre" => "Monitor 24 pulgadas",
-    "art_categoria" => 1, // Asegúrate de que este ID de categoría exista
+
+$url = "http://127.0.0.1/DAWES/API_REST/apirestauth/apirestauth/articulo.php";
+
+
+$datos = [
+    "art_nombre" => "Auriculares Bluetooth", // Cambia esto para no repetir nombres
+    "art_categoria" => 1, // Asegúrate de que esta categoría exista (ej: 1 o 2)
     "art_cantidad" => 50
 ];
 
-// Configuración
-$url = "http://localhost:3000/DAWES/API%20REST/apirestauth/apirestauth/articulo.php";
-$token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3NzAzODA2NTksImRhdGEiOnsiaWQiOiIxIiwibm9tYnJlcyI6IlVzdWFyaW8gRFdFUyJ9fQ.5nKEUDcmAPEhyy2MkB5q7G_62rF4EIliyDBbvHSmHQw"; // Tu token actual
-
+//  Inicializamos
 $ch = curl_init();
 
-// Opciones de cURL
+// 4. Configuración para POST
 curl_setopt($ch, CURLOPT_URL, $url);
-curl_setopt($ch, CURLOPT_POST, true); // Indicamos que es POST
-curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($nuevoArticulo)); // Convertimos array a JSON
+curl_setopt($ch, CURLOPT_POST, true); // Importante: Método POST
+curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($datos)); // Enviamos JSON
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-// Cabeceras (Importante: Content-Type + Authorization)
+//  Cabeceras
 curl_setopt($ch, CURLOPT_HTTPHEADER, array(
     'Content-Type: application/json',
-    'Authorization: Bearer ' . $token
+    'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3NzAzODI2MDksImRhdGEiOnsiaWQiOiIxIiwibm9tYnJlcyI6IlVzdWFyaW8gRFdFUyJ9fQ.45E-IJyvFItxwsO6bVZnr7EomhxbixBhD5_4_KAQgZY'
 ));
 
-// Ejecutar
+// Ejecutar y mostrar respuesta
 $respuesta = curl_exec($ch);
 
 if(curl_errno($ch)){
-    echo 'Error en cURL: ' . curl_error($ch);
+    echo 'Error: ' . curl_error($ch);
 } else {
-    echo "Respuesta de la API:\n";
+    echo "Respuesta del servidor (POST):\n";
     echo $respuesta;
 }
 
