@@ -2,7 +2,7 @@
 // post_articulo.php
 
 
-$url = "http://127.0.0.1/DAWES/API_REST/apirestauth/apirestauth/articulo.php";
+$url = "http://127.0.0.1/DAWES/API_REST/apirestauth/articulo.php";
 
 
 $datos = [

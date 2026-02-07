@@ -5,7 +5,7 @@
 $id_a_modificar = 1; 
 
 // URL con el parámetro ID
-$url = "http://127.0.0.1/DAWES/API_REST/apirestauth/apirestauth/articulo.php?id=" . $id_a_modificar;
+$url = "http://127.0.0.1/DAWES/API_REST/apirestauth/articulo.php?id=" . $id_a_modificar;
 
 // Datos nuevos (Modificamos cantidad o nombre)
 $datosNuevos = [

@@ -4,7 +4,7 @@
 // ID del artículo a eliminar
 $id_a_borrar = 1; 
 
-$url = "http://127.0.0.1/DAWES/API_REST/apirestauth/apirestauth/articulo.php?id=" . $id_a_borrar;
+$url = "http://127.0.0.1/DAWES/API_REST/apirestauth/articulo.php?id=" . $id_a_borrar;
 
 $ch = curl_init();
 

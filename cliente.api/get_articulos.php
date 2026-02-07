@@ -11,7 +11,7 @@ $queryString = http_build_query($parametros);
 
 // 3. URL CORREGIDA: Cambiamos el espacio " " por "%20"
 // Si tu carpeta real tiene espacio, en la URL pon %20
-$url = "http://127.0.0.1/DAWES/API_REST/apirestauth/apirestauth/articulo.php?" . $queryString;
+$url = "http://127.0.0.1/DAWES/API_REST/apirestauth/articulo.php?" . $queryString;
 
 // 4. Inicializamos cURL
 $ch = curl_init();
